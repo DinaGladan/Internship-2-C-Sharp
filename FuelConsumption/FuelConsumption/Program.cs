@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace FuelConsumption
 {
@@ -46,8 +47,8 @@ namespace FuelConsumption
             int user_choice =-1;
             var users = new Dictionary<int, List<object>>
             {
-                {575, new List<object> { "Dina", "Gladan", new DateTime(2004,02,20), new List<string> { "Bih", "Cro", "Slo" } } },
-                {555, new List<object> { "Ivan", "Ivcevic", new DateTime(2004, 01, 10), new List<string> { "Srb", "Cro" } } }
+                {575, new List<object> { "Dina", "Iladan", new DateTime(2014,02,20), new List<string> { "Bih", "Cro", "Slo" } } },
+                {555, new List<object> { "Ivan", "Gvcevic", new DateTime(2004, 01, 10), new List<string> { "Srb" } } }
             };
 
 
@@ -207,6 +208,74 @@ namespace FuelConsumption
                     }
                     break;
                 case 4:
+
+                    var viewChoice = 0;
+                    while (viewChoice != 1 && viewChoice != 2 && viewChoice != 3)
+                    {
+                        Console.WriteLine("Odaberite zeljeni pregled korisnika:\n1 - ispis svih korisnika abecedno po prezimenu\n2 - svih onih koji imaju više od 20 godina\n3 - svih onih koji imaju barem 2 putovanja");
+                        if (int.TryParse(Console.ReadLine(), out viewChoice))
+                        {
+                            Console.WriteLine("Vas odabir je {0}", viewChoice);
+                        }
+                        else Console.WriteLine("Treba bit broj");
+                    }
+
+                    if (viewChoice == 1)
+                    {
+                        Console.WriteLine("Korisnici sortirani abecedno po prezimenima ");
+                        var list_of_surnames = new List<string>();
+                        foreach(int user_id in users.Keys)
+                        {
+                            string surname = users[user_id][1].ToString();
+                            list_of_surnames.Add(surname);
+                        }
+                        list_of_surnames.Sort();
+                        
+                        foreach (var surname in list_of_surnames)
+                        {   
+                            foreach(var id in users.Keys)
+                            {
+                                if (users[id][1].ToString().Equals(surname, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Console.WriteLine($"{id} - {users[id][0]} - {users[id][1]} - {((DateTime)users[id][2]).ToShortDateString()}"); //ne zelimo sate,min,sek
+                                }
+                            }
+
+                        }
+
+                    }
+                    else if(viewChoice == 2)
+                    { 
+                        foreach (var key_value_pair in users)
+                        {
+                            var id = key_value_pair.Key;
+                            var name = key_value_pair.Value[0].ToString();
+                            var surname = key_value_pair.Value[1].ToString();
+                            var birthdate = (DateTime)key_value_pair.Value[2];
+                            int age = DateTime.Now.Year - birthdate.Year;
+                            if (age>20)
+                            {
+                                Console.WriteLine($"{id} - {name} - {surname} - {((DateTime)birthdate).ToShortDateString()}");
+                            }
+                        }
+                    }
+                    else if(viewChoice == 3)
+                    {
+                        foreach (var key_value_pair in users)
+                        {
+                            var id = key_value_pair.Key;
+                            var name = key_value_pair.Value[0].ToString();
+                            var surname = key_value_pair.Value[1].ToString();
+                            var birthdate = (DateTime)key_value_pair.Value[2];
+                            var travels = (List<string>)key_value_pair.Value[3];
+
+
+                            if (travels.Count >= 2) 
+                            {
+                                Console.WriteLine($"{id} - {name} - {surname} - {((DateTime)birthdate).ToShortDateString()}");
+                            }
+                        }
+                    }
 
                     break;
             }
