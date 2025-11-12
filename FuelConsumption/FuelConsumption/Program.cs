@@ -103,6 +103,73 @@ namespace FuelConsumption
                     break;
 
                 case 2:
+                    
+                    var deleteChoice = 0;
+                    while (deleteChoice != 1 && deleteChoice != 2)
+                    {
+                        Console.WriteLine("Zelite li obrisati korisnika: \n 1 - po ID-u\n 2 - po imenu ");
+                        if (int.TryParse(Console.ReadLine(), out deleteChoice))
+                        {
+                            Console.WriteLine("Vas odabir je {0}", deleteChoice);
+                        }
+                        else Console.WriteLine("Treba bit broj");
+                    }
+
+                    if (deleteChoice == 1)
+                    {
+                        int deleteByID = 0;
+                        while (true)
+                        {
+                            Console.WriteLine("Unesite id korisnika kojeg zelite izbrisat ");
+                            if (int.TryParse(Console.ReadLine(), out deleteByID))
+                            {
+                                if(users.ContainsKey(deleteByID)){
+                                    users.Remove(deleteByID);
+                                    Console.WriteLine("Izbrisali smo korisnika s IDiem {0}", deleteByID);
+                                    break;
+                                }
+                                else Console.WriteLine("Korisnik s unesenim ID-iem ne postji");  
+                            }
+                            else Console.WriteLine("Treba bit broj");
+                        }
+                    }
+                    else
+                    {
+                        string deleteByName = "";
+                        
+                        while (true)
+                        {
+                            var keyForDelete = 0;
+                            Console.Write("Unesite ime korisnika kojeg zelite izbrisat ");
+                            deleteByName = Console.ReadLine();
+
+                            if (string.IsNullOrEmpty(deleteByName))
+                            {
+                                Console.WriteLine("Ne mozete ostavit prazno");
+                                continue;
+                            }
+
+                            foreach (var id in users.Keys)
+                            {
+                                if (users[id][0].ToString().Equals(deleteByName, StringComparison.OrdinalIgnoreCase))
+                                //potrebno ako je razlika u malim i velikim slovima
+                                {
+                                    keyForDelete = id;
+                                    break;
+                                }
+                                
+                            }
+                            if (keyForDelete != 0)
+                            {
+                                users.Remove(keyForDelete);
+                                Console.WriteLine("Izbrisali smo korisnika s imenom {0}", deleteByName);
+                                break;
+                            }
+                            else Console.WriteLine("Ne postoji korisnik s unesenim imenom!");
+                        }
+
+                    }
+
                     break;
                 case 3:
                     break;
