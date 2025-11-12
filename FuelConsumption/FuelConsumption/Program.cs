@@ -172,8 +172,42 @@ namespace FuelConsumption
 
                     break;
                 case 3:
+                    int edit_user = 0;
+                    while (true)
+                    {
+                        Console.WriteLine("Unesite id korisnika kojeg zelite urediti ");
+                        if (int.TryParse(Console.ReadLine(), out edit_user))
+                        {
+                            if (users.ContainsKey(edit_user))
+                            {
+                                Console.Write("Unesite novo ime korisnika "); string edit_name = Console.ReadLine();
+                                edit_name = edit_name ?? "User name";
+                                Console.Write("Unesite prezime korisnika "); string edit_surname = Console.ReadLine();
+                                edit_surname = edit_surname ?? "User surname";
+
+                                DateTime edit_birth_date;
+                                while (true)
+                                {
+                                    Console.Write("Unesite datum rodjenja korisnika (YYYY-MM-DD) ");
+                                    if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out edit_birth_date))
+                                    {
+                                        break;
+                                    }
+                                    else { Console.WriteLine("Niste unijeli datum u ispravnom formatu "); }
+
+                                }
+                                var old_travels = (List<string>)users[edit_user][3]; //treba castat jer u suprotnom vraca objekt
+                                users[edit_user] = new List<object>{edit_name,edit_surname, edit_birth_date, old_travels };
+                                Console.WriteLine("Uredili smo korisnika s IDiem {0}", edit_user);
+                                break;
+                            }
+                            else Console.WriteLine("Korisnik s unesenim ID-iem ne postji");
+                        }
+                        else Console.WriteLine("Treba bit broj");
+                    }
                     break;
                 case 4:
+
                     break;
             }
 
