@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.Net.Http.Headers;
 
@@ -479,6 +480,109 @@ namespace FuelConsumption
                         }
                         break;
                     case 3:
+                        int edit_user_travels = 0;
+                        while (true)
+                        {
+                            Console.WriteLine("Unesite id korisnika cija putovanja zelite urediti ");
+                            if (int.TryParse(Console.ReadLine(), out edit_user_travels))
+                            {
+                                if (users.ContainsKey(edit_user_travels))
+                                {
+                                    var all_travels = (List<(string, DateTime, double, double, double, double)>)users[edit_user_travels][3];
+                                    for (int i = 0; i < all_travels.Count; i++)
+                                    {
+                                        var travel = all_travels[i];
+                                        Console.WriteLine("Zelite li promijeniti naziv putovanja, trenutno je {0}\n ako zelite upisite da", travel.Item1);
+                                        if ((Console.ReadLine() ?? "").Trim().ToLower() == "da")
+                                        {
+                                            Console.WriteLine("Unesite novi naziv putovanja ");
+                                            var edit_travel_name = Console.ReadLine();
+                                            edit_travel_name = string.IsNullOrWhiteSpace(edit_travel_name) ? travel.Item1 : edit_travel_name;
+                                            var updated_travel = (edit_travel_name, travel.Item2, travel.Item3, travel.Item4, travel.Item5, travel.Item6);
+                                            all_travels[i] = updated_travel;
+                                            Console.WriteLine("Promijenut je naziv putovanja u {0}", edit_travel_name);
+                                        }
+
+                                        Console.WriteLine("Zelite li promijeniti datum putovanja, trenutno je {0}\n ako zelite upisite da", travel.Item2);
+                                        if ((Console.ReadLine() ?? "").Trim().ToLower() == "da")
+                                        {
+                                            DateTime edit_travel_date;
+                                            while (true)
+                                            {
+                                                Console.Write("Unesite novi datum putovanja (YYYY-MM-DD) ");
+                                                if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out edit_travel_date))
+                                                {
+                                                    var updated_travel = (travel.Item1, edit_travel_date, travel.Item3, travel.Item4, travel.Item5, travel.Item6);
+                                                    all_travels[i] = updated_travel;
+                                                    Console.WriteLine("Promijenut je datum putovanja u {0}", edit_travel_date);
+                                                    break;
+                                                }
+                                                else  Console.WriteLine("Niste unijeli datum u ispravnom formatu ");
+                                            }
+                                        }
+                                        Console.WriteLine("Zelite li promijeniti prjedjenu kilometrazu na putovanju, trenutno je {0}\n ako zelite upisite da", travel.Item3);
+                                        if ((Console.ReadLine() ?? "").Trim().ToLower() == "da")
+                                        {
+                                            double edit_travel_distance = 0;
+                                            while (true)
+                                            {
+                                                Console.WriteLine("Unesite novu kilometrazu putovanja ");
+                                                if (double.TryParse(Console.ReadLine(), out edit_travel_distance) && edit_travel_distance > 0)
+                                                {
+                                                    var updated_travel = (travel.Item1, travel.Item2, edit_travel_distance, travel.Item4, travel.Item5, travel.Item6);
+                                                    all_travels[i] = updated_travel;
+                                                    break;
+                                                }
+                                                else Console.WriteLine("Potrebno je unijeti broj ");
+                                            }
+                                            Console.WriteLine("Promijenuta je kilometraza putovanja u {0}", edit_travel_distance);
+                                        }
+                                        Console.WriteLine("Zelite li promijeniti iznos potrosenog goriva na putovanju, trenutno je {0}\n ako zelite upisite da", travel.Item4);
+                                        if ((Console.ReadLine() ?? "").Trim().ToLower() == "da")
+                                        {
+                                            double edit_spent_fuel = 0;
+                                            double edit_total = 0;
+                                            while (true)
+                                            {
+                                                Console.WriteLine("Unesite novi iznos potrosenog goriva na putovanju ");
+                                                if (double.TryParse(Console.ReadLine(), out edit_spent_fuel) && edit_spent_fuel > 0)
+                                                {
+                                                    edit_total = edit_spent_fuel * travel.Item5;
+                                                    var updated_travel = (travel.Item1, travel.Item2, travel.Item3, edit_spent_fuel, travel.Item5, edit_total);
+                                                    all_travels[i] = updated_travel;
+                                                    break;
+                                                }
+                                                else Console.WriteLine("Potrebno je unijeti broj ");
+                                            }
+                                            Console.WriteLine("Promijenut je iznos potrosenog goriva na putovanju u {0}\nS obzirom na njega promijenio se i total na {1}", edit_spent_fuel, edit_total);
+                                        }
+                                        Console.WriteLine("Zelite li promijeniti cijenu po litri potrosenog goriva na putovanju, trenutno je {0}\n ako zelite upisite da", travel.Item5);
+                                        if ((Console.ReadLine() ?? "").Trim().ToLower() == "da")
+                                        {
+                                            double edit_fuel_price = 0;
+                                            double edit_total = 0;
+                                            while (true)
+                                            {
+                                                Console.WriteLine("Unesite novu cijenu goriva po litri na putovanju ");
+                                                if (double.TryParse(Console.ReadLine(), out edit_fuel_price) && edit_fuel_price > 0)
+                                                {   
+                                                    edit_total = travel.Item4 * edit_fuel_price;
+                                                    var updated_travel = (travel.Item1, travel.Item2, travel.Item3, travel.Item4, edit_fuel_price, edit_total);
+                                                    all_travels[i] = updated_travel;
+                                                    break;
+                                                }
+                                                else Console.WriteLine("Potrebno je unijeti broj ");
+                                            }
+                                            Console.WriteLine("Promijenuta je cijena po litri goriva na putovanju u {0}", edit_fuel_price);
+                                        }
+                                    }
+                                    
+                                }
+                                Console.WriteLine("Uredjivanje putovanja je zavrseno! ");
+                                break;
+                            }
+                            else Console.WriteLine("Treba bit broj");
+                        }
                         break;
                     case 4:
                         break;
