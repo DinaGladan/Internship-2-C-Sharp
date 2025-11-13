@@ -398,6 +398,85 @@ namespace FuelConsumption
 
                         break;
                     case 2:
+                        var deleteChoice = 0;
+                        while (deleteChoice != 1 && deleteChoice != 2 && deleteChoice != 3)
+                        {
+                            Console.WriteLine("Brisanje: \n 1 - po ID-u\n 2 - svih putovanja skupljih od unesenog iznosa\n 3 - svih putovanja jeftinijih od unesenog iznosa ");
+                            if (int.TryParse(Console.ReadLine(), out deleteChoice))
+                            {
+                                Console.WriteLine("Vas odabir je {0}", deleteChoice);
+                            }
+                            else Console.WriteLine("Treba bit broj");
+                        }
+
+                        if (deleteChoice == 1)
+                        {
+                            int deleteByID = 0;
+                            while (true)
+                            {
+                                Console.WriteLine("Unesite id korisnika kojemu zelite izbrisat putovanja");
+                                if (int.TryParse(Console.ReadLine(), out deleteByID))
+                                {
+                                    if (users.ContainsKey(deleteByID))
+                                    {
+                                        ((List<(string, DateTime, double, double, double, double)>)users[deleteByID][3]).Clear();
+                                        Console.WriteLine("Izbrisali smo sva putovanja korisniku s IDiem {0}", deleteByID);
+                                        break;
+                                    }
+                                    else Console.WriteLine("Korisnik s unesenim ID-iem ne postji");
+                                }
+                                else Console.WriteLine("Treba bit broj");
+                            }
+                        }
+                        
+                        else if (deleteChoice == 2)
+                        {
+                            double largest_amount = 100;
+                            while (true)
+                            {
+                                Console.WriteLine("Uneite iznos iznad kojeg ce se sva putovanja izbrisat");
+                                if (double.TryParse(Console.ReadLine(), out largest_amount) && largest_amount > 0)
+                                {
+                                    foreach(var keyValuePair in users)
+                                    {
+                                        var all_travels = (List<(string, DateTime, double, double, double, double)>)keyValuePair.Value[3];
+
+                                        int remove = all_travels.RemoveAll(travel => travel.Item6 > largest_amount);
+
+                                        if (remove > 0)
+                                        {
+                                            Console.WriteLine("Korisniku s IDiem: {0} je obrisano {1} putovanja.", keyValuePair.Key, remove);
+                                        }
+                                    }
+                                    break;
+                                }
+                                else Console.WriteLine("Treba bit broj");
+                            }
+                        }
+                        else if (deleteChoice == 3)
+                        {
+                            double lowest_amount = 100;
+                            while (true)
+                            {
+                                Console.WriteLine("Uneite iznos ispod kojeg ce se sva putovanja izbrisat");
+                                if (double.TryParse(Console.ReadLine(), out lowest_amount) && lowest_amount > 0)
+                                {
+                                    foreach (var keyValuePair in users)
+                                    {
+                                        var all_travels = (List<(string, DateTime, double, double, double, double)>)keyValuePair.Value[3];
+
+                                        int remove = all_travels.RemoveAll(travel => travel.Item6 < lowest_amount);
+
+                                        if (remove > 0)
+                                        {
+                                            Console.WriteLine("Korisniku s IDiem: {0} je obrisano {1} putovanja.", keyValuePair.Key, remove);
+                                        }
+                                    }
+                                    break;
+                                }
+                                else Console.WriteLine("Treba bit broj");
+                            }
+                        }
                         break;
                     case 3:
                         break;
