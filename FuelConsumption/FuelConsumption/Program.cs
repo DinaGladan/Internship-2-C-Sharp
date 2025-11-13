@@ -10,8 +10,27 @@ namespace FuelConsumption
         {
             var users = new Dictionary<int, List<object>>
             {
-                {575, new List<object> { "Dina", "Iladan", new DateTime(2014,02,20), new List<string> { "Bih", "Cro", "Slo" } } },
-                {555, new List<object> { "Ivan", "Gvcevic", new DateTime(2004, 01, 10), new List<string> { "Srb" } } }
+                {575,
+                    new List<object>
+                    { "Dina",
+                      "Iladan",
+                      new DateTime(2014,02,20),
+                      new List<(string, DateTime, double, double, double, double)>
+                      { ("Bih", new DateTime(2020,03,30), 300, 40, 1.82, 40*1.82),
+                        ("Cro", new DateTime(2020,04,20), 300, 40, 1.82, 40*1.82)
+                      }
+                    }
+                },
+                {555,
+                    new List<object>
+                    { "Ivan",
+                      "Gvcevic",
+                      new DateTime(2004, 01, 10),
+                      new List<(string, DateTime, double, double, double, double)>
+                      { ("Slo", new DateTime(2020,03,30), 300, 40, 1.82, 40*1.82)
+                      }
+                    }
+                }
             };
             while (true)
             {
@@ -43,7 +62,7 @@ namespace FuelConsumption
                         Users_function(users);
                         break;
                     case 2:
-                        Travels();
+                        Travels(users);
                         break;
                 }
             }
@@ -106,7 +125,7 @@ namespace FuelConsumption
                         }
 
                         Console.WriteLine("Ako zelite dodat putovanja vratite se na glavni izbornik.");
-                        var new_user_travels = new List<string>();
+                        var new_user_travels = new List<(string, DateTime, double, double, double, double)>();
 
                         users.Add(new_user_id, new List<object> { new_user_name, new_user_surname, new_user_birth_date, new_user_travels });
                         break;
@@ -289,7 +308,7 @@ namespace FuelConsumption
             }
             
         }
-        static void Travels()
+        static void Travels(Dictionary<int, List<object>> users)
         {
             bool exit = false;
             while (!exit)
@@ -314,6 +333,68 @@ namespace FuelConsumption
                         exit = true;
                         break;
                     case 1:
+                        while (true)
+                        {
+                            Console.WriteLine("Unesite id korisnika kojem zelite dodat putovanje ");
+                            if (int.TryParse(Console.ReadLine(), out var userID))
+                            {
+                                if (users.ContainsKey(userID))
+                                {
+                                    Console.WriteLine("Unesite naziv putovanja "); var new_travel_name = Console.ReadLine();
+                                    new_travel_name = new_travel_name ?? "Putovanje";
+                                    
+                                    DateTime new_travel_date;
+                                    while (true)
+                                    {
+                                        Console.Write("Unesite datum putovanja (YYYY-MM-DD) ");
+                                        if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out new_travel_date))
+                                        {
+                                            break;
+                                        }
+                                        else { Console.WriteLine("Niste unijeli datum u ispravnom formatu "); }
+
+                                    }
+                                    double new_distance = 0;
+                                    while (true) {
+                                        Console.WriteLine("Unesite prijedjenu kilometrazu: ");
+                                        if (double.TryParse(Console.ReadLine(), out new_distance) && new_distance > 0)
+                                        {
+                                            break;
+                                        }
+                                        else Console.WriteLine("Potrebno je unijeti broj ");
+                                    }
+                                    double new_spent_fuel = 0;
+                                    while (true)
+                                    {
+                                        Console.WriteLine("Unesite iznos potrosenog goriva: ");
+                                        if (double.TryParse(Console.ReadLine(), out new_spent_fuel) && new_spent_fuel > 0)
+                                        {
+                                            break;
+                                        }
+                                        else Console.WriteLine("Potrebno je unijeti broj ");
+                                    }
+                                    double new_fuel_price = 0;
+                                    while (true)
+                                    {
+                                        Console.WriteLine("Unesite cijenu litre goriva: ");
+                                        if (double.TryParse(Console.ReadLine(), out new_fuel_price) && new_fuel_price > 0)
+                                        {
+                                            break;
+                                        }
+                                        else Console.WriteLine("Potrebno je unijeti broj ");
+                                    }
+                                    var new_total = new_spent_fuel * new_fuel_price;
+                                    var new_travel = (new_travel_name, new_travel_date, new_distance, new_spent_fuel, new_fuel_price, new_total);
+
+                                    ((List<(string, DateTime, double, double, double, double)>)users[userID][3]).Add(new_travel);
+                                    
+                                    break;
+
+                                }
+                                else Console.WriteLine("Korisnik s unesenim ID-iem ne postji");
+                            }
+                            else Console.WriteLine("Treba bit broj");
+                        }
 
                         break;
                     case 2:
