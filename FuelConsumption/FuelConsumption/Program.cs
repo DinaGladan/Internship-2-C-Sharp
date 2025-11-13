@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Net.Http.Headers;
 
 namespace FuelConsumption
 {
@@ -14,8 +15,8 @@ namespace FuelConsumption
             };
             while (true)
             {
-                Console.WriteLine("2 - Korisnici");
-                Console.WriteLine("1 - Putovanja");
+                Console.WriteLine("1 - Korisnici");
+                Console.WriteLine("2 - Putovanja");
                 Console.WriteLine("0 - Izlaz iz aplikacije");
                 var firstChoice = -1;
                 do
@@ -39,10 +40,10 @@ namespace FuelConsumption
                         Environment.Exit(0);
                         break;
                     case 1:
-                        Travels();
+                        Users_function(users);
                         break;
                     case 2:
-                        Users_function(users);
+                        Travels();
                         break;
                 }
             }
@@ -290,7 +291,41 @@ namespace FuelConsumption
         }
         static void Travels()
         {
-            Console.WriteLine("Putovanja: ");
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Putovanja: ");
+                Console.WriteLine("1 - Unos novog putovanja \r\n2 - Brisanje putovanja \r\n3 - Uređivanje postojećeg putovanja \r\n4 - Pregled svih putovanja \r\n5 - Izvještaji i analize \r\n0 - Povratak na glavni izbornik");
+                int travel_choice = -1;
+
+                while (travel_choice != 0 && travel_choice != 1 && travel_choice != 2 && travel_choice != 3 && travel_choice != 4 && travel_choice != 5)
+                {
+                    Console.Write("Unesite zeljeni odabir: ");
+                    if (int.TryParse(Console.ReadLine(), out travel_choice))
+                    {
+                        Console.WriteLine("Potrebno je unijeti jedan od ponudjenih brojeva");
+                    }
+                    else Console.WriteLine("Potrebno je unijeti broj! ");
+                }
+
+                switch (travel_choice)
+                {
+                    case 0:
+                        exit = true;
+                        break;
+                    case 1:
+
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                }
+            }
         }
 
     }
