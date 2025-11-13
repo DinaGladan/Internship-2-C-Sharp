@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http.Headers;
 
@@ -17,8 +18,9 @@ namespace FuelConsumption
                       "Iladan",
                       new DateTime(2014,02,20),
                       new List<(string, DateTime, double, double, double, double)>
-                      { ("Bih", new DateTime(2020,03,30), 300, 40, 1.82, 40*1.82),
-                        ("Cro", new DateTime(2020,04,20), 300, 40, 1.82, 40*1.82)
+                      { ("Bih", new DateTime(2020,03,30), 300, 40, 1.82, 10*1.82),
+                        ("Cro", new DateTime(2021,04,20), 100, 10, 1.82, 40*1.82),
+                        ("Ger", new DateTime(2020,03,30), 150, 30, 1.52, 30*1.52)
                       }
                     }
                 },
@@ -28,7 +30,7 @@ namespace FuelConsumption
                       "Gvcevic",
                       new DateTime(2004, 01, 10),
                       new List<(string, DateTime, double, double, double, double)>
-                      { ("Slo", new DateTime(2020,03,30), 300, 40, 1.82, 40*1.82)
+                      { ("Slo", new DateTime(2020,02,20), 200, 20, 1.82, 20*1.82)
                       }
                     }
                 }
@@ -576,7 +578,6 @@ namespace FuelConsumption
                                             Console.WriteLine("Promijenuta je cijena po litri goriva na putovanju u {0}", edit_fuel_price);
                                         }
                                     }
-                                    
                                 }
                                 Console.WriteLine("Uredjivanje putovanja je zavrseno! ");
                                 break;
@@ -585,8 +586,222 @@ namespace FuelConsumption
                         }
                         break;
                     case 4:
+                        Console.WriteLine("Ispis svih putovanja\n");
+                        Console.WriteLine("1 - Sva putovanja redom kako su spremljena\n2 - Sva putovanja sortirana po trošku uzlazno \r\n3 - Sva  putovanja sortirana po trošku silazno \r\n4 - Sva  putovanja sortirana po kilometraži uzlazno \r\n5 - Sva  putovanja sortirana po kilometraži silazno \r\n6 - Sva  putovanja sortirana po datumu uzlazno \r\n7 - Sva  putovanja sortirana po datumu silazno ");
+                        int view_choice = -1;
+
+                        while (view_choice != 1 && view_choice != 2 && view_choice != 3 && view_choice != 4 && view_choice != 5 && view_choice != 6 && view_choice != 7)
+                        {
+                            Console.Write("Unesite zeljeni odabir: ");
+                            if (int.TryParse(Console.ReadLine(), out view_choice))
+                            {
+                                Console.WriteLine("Potrebno je unijeti jedan od ponudjenih brojeva");
+                            }
+                            else Console.WriteLine("Potrebno je unijeti broj! ");
+                        }
+                        if (view_choice == 1)
+                        {
+                            Console.WriteLine("Sva putovanja redom kako su spremljena");
+                            foreach (var user in users)
+                            {
+                                var all_travels = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                foreach (var travel in all_travels)
+                                {
+                                    Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                                    //za . umjesto ,
+                                }
+                            }
+                        }
+                        if (view_choice == 2)
+                        {
+                            Console.WriteLine("Sva putovanja sortirana po trošku uzlazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user); //ne moze add
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderBy(o => o.Item6).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }                        
+                        }
+                        else if(view_choice == 3)
+                        {
+                            Console.WriteLine("Sva  putovanja sortirana po trošku silazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user);
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderByDescending(o => o.Item6).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }
+                        }
+                        else if(view_choice == 4)
+                        {
+                            Console.WriteLine("Sva putovanja sortirana po kilometrazi uzlazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user);
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderBy(o => o.Item3).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }
+                        }
+                        else if (view_choice == 5)
+                        {
+                            Console.WriteLine("Sva putovanja sortirana po kilometrazi silazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user);
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderByDescending(o => o.Item3).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }
+                        }
+                        else if (view_choice == 6)
+                        {
+                            Console.WriteLine("Sva putovanja sortirana po datumu uzlazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user);
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderBy(o => o.Item2).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }
+                        }
+                        else if (view_choice == 7)
+                        {
+                            Console.WriteLine("Sva putovanja sortirana po datumu silazno");
+                            var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                            foreach (var user in users)
+                            {
+                                var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                                travels_from_all_users.AddRange(travels_from_one_user);
+                            }
+                            travels_from_all_users = travels_from_all_users.OrderByDescending(o => o.Item2).ToList();
+                            foreach (var travel in travels_from_all_users)
+                            {
+                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                            }
+                        }
                         break;
                     case 5:
+                        Console.WriteLine("Izvještaji i analize");
+                        while (true)
+                        {
+                            Console.WriteLine("\nUnesite id korisnika cije vas izvjesce zanima: ");
+                            if (int.TryParse(Console.ReadLine(), out var user_report))
+                            {
+                                if (users.ContainsKey(user_report))
+                                {
+                                    var user = users[user_report];
+                                    var user_travels = (List<(string, DateTime, double, double, double, double)>)user[3];
+
+                                    Console.WriteLine("1 - Ukupna potrošnja goriva (zbroj svih litara) \r\n2 - Ukupni troškovi goriva (zbroj svih goriva * cijena) \r\n3 - Prosječna potrošnja goriva u L/100km po formuli: \r\nprosjek = (ukupno_gorivo / ukupno_kilometara) * 100 \r\n4 - Putovanje s najvećom potrošnjom goriva \r\n5 - Pregled putovanja po određenom datumu ");
+                                    int choice_of_report = -1;
+
+                                    while (choice_of_report != 1 && choice_of_report != 2 && choice_of_report != 3 && choice_of_report != 4 && choice_of_report != 5 )
+                                    {
+                                        Console.Write("Unesite zeljeni odabir: ");
+                                        if (int.TryParse(Console.ReadLine(), out choice_of_report))
+                                        {
+                                            Console.WriteLine("Potrebno je unijeti jedan od ponudjenih brojeva");
+                                        }
+                                        else Console.WriteLine("Potrebno je unijeti broj! ");
+                                    }
+
+                                    if (choice_of_report == 1)
+                                    {
+                                        double total_fuel_consumption = 0;
+                                        foreach (var travel in user_travels)
+                                        {
+                                            total_fuel_consumption += travel.Item4;
+                                        }
+                                        Console.WriteLine("Korisnik je sveukupno potrosio {0} L goriva.", total_fuel_consumption);
+                                    }
+                                    else if (choice_of_report == 2)
+                                    {
+                                        double total_of_total_costs = 0;
+                                        foreach (var travel in user_travels)
+                                        {
+                                            total_of_total_costs += travel.Item6;
+                                        }
+                                        Console.WriteLine("Korisnikov sveukupni trosak je {0}.", total_of_total_costs);
+                                    }
+                                    else if (choice_of_report == 3)
+                                    {
+                                        double avg_fuel_consumption = 0;
+                                        double total_fuel = 0;
+                                        double total_km = 0;
+                                        foreach (var travel in user_travels)
+                                        {
+                                            total_fuel += travel.Item4;
+                                            total_km += travel.Item3;
+                                            avg_fuel_consumption =(total_fuel/total_km)*100;
+                                        }
+                                        Console.WriteLine("Korisnikova prosječna potrošnja goriva u L/100km je {0}.", avg_fuel_consumption);
+                                    }
+                                    else if (choice_of_report == 4)
+                                    {
+                                        double biggest_fuel_consumption = 0;
+                                        var travel_with_biggest_fuel_consumption=("", DateTime.MinValue, 0.0, 0.0, 0.0, 0.0);
+                                        foreach (var travel in user_travels)
+                                        {   if(travel.Item4 > biggest_fuel_consumption)
+                                            {
+                                                biggest_fuel_consumption = travel.Item4;
+                                                travel_with_biggest_fuel_consumption = travel;
+                                            }      
+
+                                        }
+                                        Console.WriteLine("Najveci trosak goriva je od {0}.", biggest_fuel_consumption);
+                                        Console.WriteLine("Ono je na putovanju:");
+                                        Console.WriteLine($"{travel_with_biggest_fuel_consumption.Item1}\nDatum: {travel_with_biggest_fuel_consumption.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel_with_biggest_fuel_consumption.Item3}\nGorivo: {travel_with_biggest_fuel_consumption.Item4} L\nCijena po litri: {travel_with_biggest_fuel_consumption.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel_with_biggest_fuel_consumption.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+                                    }
+                                    else if(choice_of_report == 5)
+                                    {
+                                        DateTime search_by_date;
+                                        while (true)
+                                        {
+                                            Console.Write("Unesite datum po kejemu zelite pregledat putovanja (YYYY-MM-DD) ");
+                                            if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out search_by_date))
+                                            {
+                                                break;
+                                            }
+                                            else { Console.WriteLine("Niste unijeli datum u ispravnom formatu "); }
+                                        }
+                                        foreach (var travel in user_travels)
+                                        {
+                                            if (travel.Item2 == search_by_date)
+                                            {
+                                                Console.WriteLine($"{travel.Item1}\nDatum: {travel.Item2.ToString("yyyy-MM-dd")}\nKilometri: {travel.Item3}\nGorivo: {travel.Item4} L\nCijena po litri: {travel.Item5.ToString("0.00", CultureInfo.InvariantCulture)} EUR\nUkupno: {travel.Item6.ToString("0.00", CultureInfo.InvariantCulture)} EUR\n");
+
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                else Console.WriteLine("Ne postoji korisnik s unesenim IDiem.");
+                            }
+                            else Console.WriteLine("Trebate unijeti broj! ");
+                        }
                         break;
                 }
             }
