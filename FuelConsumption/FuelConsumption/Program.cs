@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
@@ -59,11 +60,12 @@ namespace FuelConsumption
             {
                 Console.WriteLine("1 - Korisnici");
                 Console.WriteLine("2 - Putovanja");
+                Console.WriteLine("3 - Statistika");
                 Console.WriteLine("0 - Izlaz iz aplikacije");
                 var firstChoice = -1;
                 do
                 {
-                    Console.Write("Unesite zeljenu opciju (0,1,2): ");
+                    Console.Write("Unesite zeljenu opciju (0,1,2,3): ");
                     if (int.TryParse(Console.ReadLine(), out firstChoice))
                         Console.WriteLine(); 
                     else {
@@ -72,7 +74,7 @@ namespace FuelConsumption
                     }
                     
 
-                } while (firstChoice != 0 && firstChoice != 1 && firstChoice != 2);
+                } while (firstChoice != 0 && firstChoice != 1 && firstChoice != 2 && firstChoice != 3);
 
                 switch (firstChoice)
                 {
@@ -84,6 +86,9 @@ namespace FuelConsumption
                         break;
                     case 2:
                         Travels(users);
+                        break;
+                    case 3:
+                        Statistics(users);
                         break;
                 }
             }
@@ -890,5 +895,59 @@ namespace FuelConsumption
             }
         }
 
+        static void Statistics(Dictionary<int, List<object>> users)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Statistika: ");
+                Console.WriteLine("1 - Korisnik s najvećim ukupnim troškom goriva \r\n2 - Korisnik s najviše putovanja \r\n3 - Prosječan broj putovanja po korisniku \r\n4 - Ukupan broj prijeđenih kilometara svih korisnika \r\n0 - Povratak na glavni izbornik");
+                int statistics_choice = -1;
+
+                while (statistics_choice != 0 && statistics_choice != 1 && statistics_choice != 2 && statistics_choice != 3 && statistics_choice != 4)
+                {
+                    Console.Write("Unesite zeljeni odabir: ");
+                    if (int.TryParse(Console.ReadLine(), out statistics_choice))
+                        Console.WriteLine();
+                    else Console.WriteLine("Potrebno je unijeti broj! ");
+                }
+                switch (statistics_choice)
+                {
+                    case 0:
+                        exit = true;
+                        break;
+
+                    case 1:
+                        double highest_total_fuel_cost = 0;
+                        var user_with_highest_total_fuel_cost = new KeyValuePair<int, List<object>>();
+                        foreach (var user in users)
+                        {
+                            double one_user_total_fuel_cost = 0;
+                            var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                            foreach (var travel in travels_from_one_user)
+                            {
+                                one_user_total_fuel_cost += travel.Item6;
+                            }
+                            if (one_user_total_fuel_cost > highest_total_fuel_cost) { 
+                                highest_total_fuel_cost = one_user_total_fuel_cost;
+                                user_with_highest_total_fuel_cost = user;
+                            }
+                        }
+                        Console.WriteLine("ID korisnika s najvecim ukupnim troskom goriva je: {0}\nU iznosu od {1}", user_with_highest_total_fuel_cost.Key,highest_total_fuel_cost);
+
+                        break;
+
+                    case 2:
+                        break;
+
+                    case 3:
+                        break;
+
+                    case 4:
+                        break;
+
+                }
+            }
+        }
     }
 }
