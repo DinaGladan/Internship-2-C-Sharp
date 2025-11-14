@@ -49,7 +49,7 @@ namespace FuelConsumption
                       new List<(string, DateTime, double, double, double, double)>
                       { ("Mađarska", new DateTime(2025, 3, 10), 760.0, 49.5, 1.94, 49.5 * 1.94),
                         ("Srbija", new DateTime(2025, 4, 2), 640.0, 41.7, 1.88, 41.7 * 1.88),
-                        
+                        ("Njemačka", new DateTime(2025, 5, 18), 1030.0, 67.0, 2.00, 67.0 * 2.00),
                         ("Češka", new DateTime(2025, 6, 6), 980.0, 64.2, 1.97, 64.2 * 1.97), 
                         ("Slovačka", new DateTime(2025, 6, 6), 920.0, 59.0, 1.96, 59.0 * 1.96)
                       }
@@ -933,7 +933,7 @@ namespace FuelConsumption
                                 user_with_highest_total_fuel_cost = user;
                             }
                         }
-                        Console.WriteLine("ID korisnika s najvecim ukupnim troskom goriva je: {0}\nU iznosu od {1}", user_with_highest_total_fuel_cost.Key,highest_total_fuel_cost);
+                        Console.WriteLine("ID korisnika s najvecim ukupnim troskom goriva je: {0}\nU iznosu od {1}\n", user_with_highest_total_fuel_cost.Key,highest_total_fuel_cost);
                         break;
 
                     case 2:
@@ -949,22 +949,32 @@ namespace FuelConsumption
                                 most_travels = user_travels;
                             }
                         }
-                        Console.WriteLine("ID korisnika s najvecim ubrojem putovanja je: {0}\nU iznosu od {1}", user_with_most_travels.Key, most_travels);
+                        Console.WriteLine("ID korisnika s najvecim ubrojem putovanja je: {0}\nU iznosu od {1}\n", user_with_most_travels.Key, most_travels);
                         break;
 
                     case 3:
-                        var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                        var travels_from_all_users_case3 = new List<(string, DateTime, double, double, double, double)>();
                         var number_of_users = users.Count();
                         foreach (var user in users)
                         {
                             var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
-                            travels_from_all_users.AddRange(travels_from_one_user);
+                            travels_from_all_users_case3.AddRange(travels_from_one_user);
                         }
-                        var travels_count = travels_from_all_users.Count();
-                        Console.WriteLine("Prosjecan broj putovanja po korisniku je {0}", Math.Round((double)travels_count/number_of_users,2));
+                        var travels_count = travels_from_all_users_case3.Count();
+                        Console.WriteLine("Prosjecan broj putovanja po korisniku je {0}\n", Math.Round((double)travels_count/number_of_users,2));
                         break;
 
                     case 4:
+                        double total_km = 0;
+                        var travels_from_all_users_case4 = new List<(string, DateTime, double, double, double, double)>();
+                        foreach (var user in users)
+                        {
+                            var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                            travels_from_all_users_case4.AddRange(travels_from_one_user);
+                        }
+                        foreach (var travel in travels_from_all_users_case4)
+                            total_km += travel.Item3;
+                        Console.WriteLine("Svi korisnici skupa su presli {0} km\n", total_km);
                         break;
 
                 }
