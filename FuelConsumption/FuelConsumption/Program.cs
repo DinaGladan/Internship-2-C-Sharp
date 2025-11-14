@@ -19,8 +19,9 @@ namespace FuelConsumption
                       "Iladan",
                       new DateTime(2004,02,20),
                       new List<(string, DateTime, double, double, double, double)>
-                      { ("Imotski", new DateTime(2022, 5, 12), 128.4, 9.2, 1.63, 9.2 * 1.63),            
-                       
+                      { ("Imotski", new DateTime(2022, 5, 12), 128.4, 9.2, 1.63, 9.2 * 1.63),
+                        ("Jezero", new DateTime(2025, 6, 6), 22.7, 1.6, 1.42, 1.6 * 1.42),
+                        ("Makarska", new DateTime(2022, 7, 19), 312.9, 21.8, 1.78, 21.8 * 1.78),
                         ("Omiš", new DateTime(2024, 8, 2), 14.3, 1.1, 1.54, 1.1 * 1.54),
                         ("Zagreb", new DateTime(2023, 9, 5), 456.2, 32.5, 1.90, 32.5 * 1.90)
                       }
@@ -33,8 +34,8 @@ namespace FuelConsumption
                       new DateTime(1994, 01, 10),
                       new List<(string, DateTime, double, double, double, double)>
                       { ("Italija", new DateTime(2024, 10, 12), 380.0, 26.5, 1.85, 26.5 * 1.85),
-                        ("Slovenija", new DateTime(2024, 11, 5), 470.0, 31.8, 1.92, 31.8 * 1.92),     
-                                
+                        ("Slovenija", new DateTime(2024, 11, 5), 470.0, 31.8, 1.92, 31.8 * 1.92),
+                        ("Austrija", new DateTime(2024, 12, 1), 690.0, 46.0, 1.95, 46.0 * 1.95),
                         ("Bosna i Hercegovina", new DateTime(2025, 1, 22), 170.0, 11.4, 1.60, 11.4 * 1.60),
                         ("Crna Gora", new DateTime(2025, 6, 6), 290.0, 19.2, 1.70, 19.2 * 1.70)
                       }
@@ -46,7 +47,9 @@ namespace FuelConsumption
                       "Nncevic",
                       new DateTime(2001,11,11),
                       new List<(string, DateTime, double, double, double, double)>
-                      { 
+                      { ("Mađarska", new DateTime(2025, 3, 10), 760.0, 49.5, 1.94, 49.5 * 1.94),
+                        ("Srbija", new DateTime(2025, 4, 2), 640.0, 41.7, 1.88, 41.7 * 1.88),
+                        
                         ("Češka", new DateTime(2025, 6, 6), 980.0, 64.2, 1.97, 64.2 * 1.97), 
                         ("Slovačka", new DateTime(2025, 6, 6), 920.0, 59.0, 1.96, 59.0 * 1.96)
                       }
@@ -950,6 +953,15 @@ namespace FuelConsumption
                         break;
 
                     case 3:
+                        var travels_from_all_users = new List<(string, DateTime, double, double, double, double)>();
+                        var number_of_users = users.Count();
+                        foreach (var user in users)
+                        {
+                            var travels_from_one_user = (List<(string, DateTime, double, double, double, double)>)user.Value[3];
+                            travels_from_all_users.AddRange(travels_from_one_user);
+                        }
+                        var travels_count = travels_from_all_users.Count();
+                        Console.WriteLine("Prosjecan broj putovanja po korisniku je {0}", Math.Round((double)travels_count/number_of_users,2));
                         break;
 
                     case 4:
